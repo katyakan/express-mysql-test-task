@@ -17,7 +17,7 @@ const STATUS_CODES = {
 };
 
 const ERROR_MESSAGES = {
-  DEFAULT_ERROR: "На сервере произошла ошибка",
+  DEFAULT_ERROR: "На сервере произошла ошибка cards",
   CARD_NOT_FOUND: "Карточка с указанным _id не найдена",
   INVALID_DATA: "Переданы некорректные данные",
   FORBIDDEN_ACTION: "Вы не можете удалить чужую карточку"

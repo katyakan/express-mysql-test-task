@@ -1,77 +1,53 @@
-import mongoose, { Schema, Document, model } from 'mongoose';
-import validator from 'validator';
-import bcrypt from 'bcryptjs';
-import { CallbackError } from 'mongoose';
+import { DataTypes, Model, Optional } from 'sequelize';
+import { sequelize } from '../../database'; // Adjust according to your project setup
 
-interface IUser extends Document {
-  name?: string;
-  about?: string;
-  avatar?: string;
-  email: string;
+// Define User attributes interface
+interface UserAttributes {
+  id: string;
   password: string;
-  isPasswordMatch(password: string): Promise<boolean>;
+  refreshToken: string | null;
+//   email: string; // Add email to the attributes
+// }
+}
+// Define the creation attributes (optional fields)
+interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+
+export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+  public id!: string;
+  public password!: string;
+  public refreshToken!: string | null;
+  // public email!: string; // Declare email property
+
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 }
 
-
-const userSchema = new Schema<IUser>({
-  name: {
-    type: String,
-    required: false,
-    default: 'Жак-Ив Кусто',
-    minlength: 2,
-    maxlength: 30,
-  },
-  about: {
-    type: String,
-    required: false,
-    default: 'Исследователь',
-    minlength: 2,
-    maxlength: 200,
-  },
-  avatar: {
-    type: String,
-    required: false,
-    default: 'https://example.com/avatar.jpg',
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    validate: {
-      validator: (value: string) => validator.isEmail(value),
-      message: 'Некорректный email',
+User.init(
+  {
+    id: {
+      type: DataTypes.STRING,
+      primaryKey: true,
+      allowNull: false,
     },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    refreshToken: {
+      type: DataTypes.STRING,
+      allowNull: true,  // Allow null if no refreshToken is set initially
+    },
+    // email: {
+    //   type: DataTypes.STRING,
+    //   allowNull: false,
+    //   unique: true,  // Ensure email is unique
+    //   validate: {
+    //     isEmail: true,  // Validate email format
+    //   },
+    // },
   },
-  password: {
-    type: String,
-    required: true,
-    select: false
-  },
-});
-
-
-userSchema.pre('save', async function(next) {
-  const user = this as IUser;
-
-
-  if (!user.isModified('password')) {
-    return next();
+  {
+    sequelize,
+    tableName: 'users',
   }
-
-  try {
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, salt);
-    next();
-  } catch (err) {
-    return next(err as CallbackError);
-  }
-});
-
-
-userSchema.methods.isPasswordMatch = async function(password: string) {
-  const user = this as IUser;
-  return bcrypt.compare(password, user.password);
-};
-
-
-export default model<IUser>('User', userSchema);
+);
