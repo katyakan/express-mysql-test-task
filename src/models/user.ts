@@ -5,18 +5,16 @@ import { sequelize } from '../../database'; // Adjust according to your project 
 interface UserAttributes {
   id: string;
   password: string;
-  refreshToken: string | null;
-//   email: string; // Add email to the attributes
-// }
+  refreshTokens: string[]; // Store multiple refresh tokens as an array
 }
+
 // Define the creation attributes (optional fields)
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'refreshTokens'> {}
 
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public id!: string;
   public password!: string;
-  public refreshToken!: string | null;
-  // public email!: string; // Declare email property
+  public refreshTokens!: string[]; // Use an array for refresh tokens
 
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
@@ -33,21 +31,15 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    refreshToken: {
-      type: DataTypes.STRING,
-      allowNull: true,  // Allow null if no refreshToken is set initially
+    refreshTokens: {
+      type: DataTypes.JSON,  // JSONB to store an array of tokens
+      allowNull: true,
+      defaultValue: [],  // Default empty array
     },
-    // email: {
-    //   type: DataTypes.STRING,
-    //   allowNull: false,
-    //   unique: true,  // Ensure email is unique
-    //   validate: {
-    //     isEmail: true,  // Validate email format
-    //   },
-    // },
   },
   {
     sequelize,
     tableName: 'users',
+    timestamps: true,  // Automatically includes createdAt and updatedAt
   }
 );

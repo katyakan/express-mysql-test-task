@@ -15,7 +15,7 @@ import { requestLogger, errorLogger } from "./middlewares/logger";
 import { NotFoundError } from "./errors/NotFoundError";
 import { UnauthorizedError } from "./errors/UnauthorizedError";
 
-import { createUser, login } from "./controllers/users";
+import { createUser, login, logout } from "./controllers/users";
 
 
 const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
@@ -40,6 +40,7 @@ app.get("/", (req: Request, res: Response) => {
 app.post("/signin", login);
 // // app.post("/signincreateUser); refreshToken);
 app.post("/signup", createUser);
+app.post("/logout", logout);
 app.use("/auth", authRoutes);
 // app.use("/file", fileRoutes);
 // Файлы
