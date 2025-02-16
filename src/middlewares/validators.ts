@@ -1,43 +1,31 @@
-import { celebrate, Joi } from "celebrate";
+import { celebrate, Joi, Segments } from "celebrate";
 
-export const validateUserSignup = celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().uri(),
-  }),
-});
+//валидация id пользователя mail/phone
+const phoneRegex = /^[+]?[0-9]{1,4}[ ]?([0-9]{6,15})$/;
 
-export const validateUserSignin = celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
-  }),
-});
-
-// export const validateUserId = celebrate({
-//   params: Joi.object().keys({
-//     userId: Joi.string().hex().length(24),
-//   }),
-// });
-
-export const validateCard = celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().uri(),
-  }),
-});
-
-export const validateCardId = celebrate({
+export const validateUserId = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().hex().length(24),
+    userId: Joi.string()
+      .pattern(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/) // Для почты
+      .message('Invalid email format')
+      .required()
+      .when(Joi.ref('userId'), {
+        is: Joi.string().pattern(phoneRegex),
+        then: Joi.string().pattern(phoneRegex).message('Invalid phone number format'),
+        otherwise: Joi.string().email().message('Invalid email format'),
+      })
   }),
 });
-export const validateUserUpdate = celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
+// Валидация id файла
+export const validateFileId = celebrate({
+  [Segments.PARAMS]: Joi.object().keys({
+    fileId: Joi.number().integer().required(),
+  }),
+});
+
+// Валидация файла
+export const validateFile = celebrate({
+  [Segments.BODY]: Joi.object().keys({
+    file: Joi.object().required(),
   }),
 });
