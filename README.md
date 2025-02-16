@@ -5,10 +5,14 @@
 
 Этот проект представляет собой серверное приложение на **Express** с базой данных **MySQL**, используя **Sequelize** для ORM.
 ## Установка
+
+Клонирование репозитория:
+
+    git clone https://github.com/katyakan/express-mysql-test-task.git
+
 Перейдите в директорию проекта:
  
-
-       cd test-task
+       cd express-mysql-test-task
 
 ## Установите зависимости:
 
