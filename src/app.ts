@@ -18,9 +18,9 @@ import { UnauthorizedError } from "./errors/UnauthorizedError";
 import { createUser, login, logout } from "./controllers/users";
 
 
-const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
-const JWT_EXPIRATION = "10m"; // Токен действует 10 минут
-const REFRESH_TOKEN_EXPIRATION = "7d"; // Для refresh токена 7 дней
+// const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
+// const JWT_EXPIRATION = "10m"; // Токен действует 10 минут
+// const REFRESH_TOKEN_EXPIRATION = "7d"; // Для refresh токена 7 дней
 const { PORT = 3000, MYSQL_URI, MONGO_URI } = process.env;
 
 // Инициализация Express и базы данных
@@ -42,7 +42,7 @@ app.post("/signin", login);
 app.post("/signup", createUser);
 app.post("/logout", logout);
 app.use("/auth", authRoutes);
-// app.use("/file", fileRoutes);
+// app.use("/file", files);
 // Файлы
 // app.post("/file/upload", uploadFile);
 
