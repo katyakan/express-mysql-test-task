@@ -8,14 +8,17 @@ import {
   deleteFile,
   updateFile,
 } from "../controllers/file";
+import {
+  validateFileId, validateFile
+} from "../middlewares/validators"
 
 const router = Router();
 
-router.post("/upload", upload.single("file"), uploadFile);
+router.post("/upload", validateFile, upload.single("file"), uploadFile);
 router.get("/list", listFiles);
-router.get("/:id", getFile);
-router.get("/download/:id", downloadFile);
-router.delete("/:id", deleteFile);
-router.put("/:id", upload.single("file"), updateFile);
+router.get("/:id", validateFileId, getFile);
+router.get("/download/:id", validateFileId, downloadFile);
+router.delete("/:id", validateFileId, deleteFile);
+router.put("/:id", validateFileId, upload.single("file"), updateFile);
 
 export default router;

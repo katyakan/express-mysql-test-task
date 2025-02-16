@@ -1,19 +1,29 @@
 import { celebrate, Joi, Segments } from "celebrate";
 
-//валидация id пользователя mail/phone
+
+// Регулярное выражение для телефона
 const phoneRegex = /^[+]?[0-9]{1,4}[ ]?([0-9]{6,15})$/;
 
 export const validateUserId = celebrate({
   params: Joi.object().keys({
     userId: Joi.string()
-      .pattern(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/) // Для почты
-      .message('Invalid email format')
-      .required()
-      .when(Joi.ref('userId'), {
-        is: Joi.string().pattern(phoneRegex),
-        then: Joi.string().pattern(phoneRegex).message('Invalid phone number format'),
-        otherwise: Joi.string().email().message('Invalid email format'),
+      .custom((value, helpers) => {
+        // Проверка на email
+        const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+        if (emailRegex.test(value)) {
+          return value; // Если это email, оставляем как есть
+        }
+        // Проверка на телефон
+        if (phoneRegex.test(value)) {
+          return value; // Если это телефон, оставляем как есть
+        }
+        // Если ни одно из условий не подходит
+        return helpers.error("any.invalid");
       })
+      .required()
+      .messages({
+        "any.invalid": 'Invalid userId format (should be email or phone number)',
+      }),
   }),
 });
 // Валидация id файла
