@@ -4,30 +4,30 @@
 ## Описание
 
 Этот проект представляет собой серверное приложение на **Express** с базой данных **MySQL**, используя **Sequelize** для ORM.
-## Установка
+## Установка :interrobang::
 
-Клонирование репозитория:
+Клонирование репозитория :floppy_disk::
 
     git clone https://github.com/katyakan/express-mysql-test-task.git
 
-Перейдите в директорию проекта:
+Перейдите в директорию проекта :arrow_heading_down::
  
        cd express-mysql-test-task
 
-## Установите зависимости:
+ Установите зависимости :arrow_heading_down::
 
     npm install
-## Запустите миграции базы данных:
+ Запустите миграции базы данных :arrow_heading_down::
 
     npx sequelize-cli db:migrate
 
 
-## Запустите приложение в режиме разработки:
+Запустите приложение в режиме разработки :arrow_heading_down::
 
     npm run dev
 
 
-## Скрипты
+## Скрипты :bookmark_tabs:
 
 
 `npm run lint` - проверка кода с помощью ESLint
