@@ -8,17 +8,14 @@ export const validateUserId = celebrate({
   params: Joi.object().keys({
     userId: Joi.string()
       .custom((value, helpers) => {
-        // Проверка на email
-        const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+                const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
         if (emailRegex.test(value)) {
-          return value; // Если это email, оставляем как есть
+          return value;
         }
-        // Проверка на телефон
-        if (phoneRegex.test(value)) {
-          return value; // Если это телефон, оставляем как есть
+                if (phoneRegex.test(value)) {
+          return value;
         }
-        // Если ни одно из условий не подходит
-        return helpers.error("any.invalid");
+               return helpers.error("any.invalid");
       })
       .required()
       .messages({

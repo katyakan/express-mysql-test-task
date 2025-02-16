@@ -9,11 +9,10 @@ import { UnauthorizedError } from "../errors/UnauthorizedError";
 
 export interface IUser {
   id: string;
-
 }
 
 const ERROR_MESSAGES = {
-  DEFAULT_ERROR: "На сервере произошла ошибка ussers",
+  DEFAULT_ERROR: "На сервере произошла ошибка",
   USER_NOT_FOUND: "Пользователь с указанным _id не найден",
   INVALID_DATA: "Переданы некорректные данные",
 };
@@ -121,11 +120,11 @@ export const logout = async (req: Request, res: Response, next: NextFunction) =>
   }
 };
 
-export const getUserInfo = (req: Request, res: Response) => {
+export const getUserInfo = (req: Request, res: Response, next: NextFunction) => {
   const user = (req as { user?: { _id: string } }).user;
   if (user) {
     return res.json({ userId: user._id });
   } else {
-    return res.status(401).json({ message: "Пользователь не авторизован" });
+    return next(new UnauthorizedError("Пользователь не авторизован"));
   }
 };
