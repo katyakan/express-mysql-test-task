@@ -1,15 +1,12 @@
 
-
 import express, { Request, Response, NextFunction, Router } from "express";
 import cors from "cors";
-
 import filesRoutes from "./routes/filesRoutes";
 import cookieParser from "cookie-parser";
-
 import { errorHandler } from "./middlewares/errorHandler";
 import { requestLogger, errorLogger } from "./middlewares/logger";
 import { NotFoundError } from "./errors/NotFoundError";
-import { createUser, login, logout } from "./controllers/users";
+import { createUser, getUserInfo, login, logout, refreshToken } from "./controllers/users";
 import { auth } from "./middlewares/auth"
 
 const { PORT = 3000, MYSQL_URI } = process.env;
@@ -34,8 +31,10 @@ app.post("/logout", logout);
 
 // Роуты для пользователей и аутентификации
 router.use(auth);
-app.use("/file", filesRoutes);
 
+app.use("/file", filesRoutes);
+app.get("/info", auth, getUserInfo);
+app.post("/signin/new_token", auth, refreshToken);
 app.use(errorLogger);
 app.use((req: Request, res: Response, next: NextFunction) => {
   next(new NotFoundError("Запрашиваемый ресурс не найден"));
